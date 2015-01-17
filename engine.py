@@ -2,12 +2,6 @@
 
 import boto, boto.cloudformation, yaml, os 
 
-
-region = os.environ['REGION']
-## no need for declaration here connect_to_region() will search for them in env vars.
-#access_key = os.environ['ACCESS_KEY']
-#secret_key = os.environ['SECRET_KEY']
-
 def get_cfn_conn(region):
 	try : 
 		cfn_conn = boto.cloudformation.connect_to_region(region_name=region)
