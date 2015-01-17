@@ -1,0 +1,8 @@
+---
+mystack:
+    region: eu-west-1
+    template: stack.json
+    parameters:
+        InstanceType: t2.micro
+        KeyName: cakeSolutions
+        SSHLocation: 0.0.0.0/0
