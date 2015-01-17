@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import boto, boto.cloudformation, yaml, os 
+import boto, boto.cloudformation, yaml
 
 def get_cfn_conn(region):
 	try : 
