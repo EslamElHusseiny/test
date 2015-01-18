@@ -10,21 +10,29 @@ def get_cfn_conn(region):
 	return cfn_conn
 
 def get_template_body(template):
-	with open(template, "r") as stack_file:
-	    template_body = stack_file.read()
-	    return template_body
+	try:
+		with open(template, "r") as stack_file:
+			template_body = stack_file.read()
+			return template_body
+	except Exception, e:
+		print str(e)
+		exit(1)
+
 
 
 def parse_answers(answers_file):
 	ret={}
-	with open(answers_file, "r") as answers: 
-	    yans = yaml.load(answers)
-	    ret['stack_name'] = yans.keys()[0] 
-	    ret['template'] = yans[ret['stack_name']]['template']
-	    ret['aws_region'] = yans[ret['stack_name']]['region']
-	    ret['parameters'] = list(yans[ret['stack_name']]['parameters'].viewitems())
-	    return ret
-
+	try :
+		with open(answers_file, "r") as answers:
+			yans = yaml.load(answers)	
+			ret['stack_name'] = yans.keys()[0] 
+			ret['template'] = yans[ret['stack_name']]['template']
+			ret['aws_region'] = yans[ret['stack_name']]['region']
+			ret['parameters'] = list(yans[ret['stack_name']]['parameters'].viewitems())
+			return ret		
+	except Exception as e : 
+		print str(e)
+		exit(1)
 
 if __name__ == '__main__':
 	answers = parse_answers('answers.yml')
