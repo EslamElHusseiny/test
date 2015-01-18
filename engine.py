@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import boto, boto.cloudformation, yaml
+import boto, boto.cloudformation, yaml, time
 
 def get_cfn_conn(region):
 	try : 
@@ -18,8 +18,6 @@ def get_template_body(template):
 		print str(e)
 		exit(1)
 
-
-
 def parse_answers(answers_file):
 	ret={}
 	try :
@@ -34,6 +32,23 @@ def parse_answers(answers_file):
 		print str(e)
 		exit(1)
 
+def get_stack_outputs(cfn_conn, stack_name):
+	stack = cfn_conn.describe_stacks(stack_name)[0]
+	for outputs in stack.outputs:
+		print('%s ==> %s   /*%s*/' %(outputs.key, outputs.value, outputs.description))
+
+def log_stack_events(cfn_conn, stack_name):
+	create_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' CREATE_COMPLETE'
+	rollback_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' ROLLBACK_COMPLETE'
+	event = str(cfn_conn.describe_stack_events(stack_name)[0])
+	while event != create_complete and event != rollback_complete: 
+		if str(cfn_conn.describe_stack_events(stack_name)[0]) != event:
+			event = str(cfn_conn.describe_stack_events(stack_name)[0])
+			print event
+		else:
+			time.sleep(2) #TODO: needs refactoring see => https://forums.aws.amazon.com/thread.jspa?messageID=366822
+	print str(cfn_conn.describe_stack_events(stack_name)[0])
+
 if __name__ == '__main__':
 	answers = parse_answers('answers.yml')
 	cfn_conn = get_cfn_conn(answers['aws_region'])
@@ -41,4 +56,11 @@ if __name__ == '__main__':
 		cfn_conn.create_stack(stack_name=answers['stack_name'], template_body=get_template_body(answers['template']), parameters=answers['parameters'])
 	except Exception, e:
 		print str(e)
+		exit(1)
+	log_stack_events(cfn_conn, answers['stack_name'])
+	get_stack_outputs(cfn_conn, answers['stack_name'])
 	
+
+
+
+
