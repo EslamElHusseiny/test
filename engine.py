@@ -61,6 +61,7 @@ def log_stack_events(cfn_conn, stack_name):
 				logger.info(event)
 		except:
 			time.sleep(1) #TODO: needs refactoring see => https://forums.aws.amazon.com/thread.jspa?messageID=366822
+			pass
 
 if __name__ == '__main__':
 	answers = parse_answers('answers.yml')
