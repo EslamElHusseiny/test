@@ -59,7 +59,7 @@ def log_stack_events(cfn_conn, stack_name):
 			if sevent != event:
 				event = sevent
 				logger.info(event)
-		except boto.exception.BotoServerError:
+		except:
 			time.sleep(1) #TODO: needs refactoring see => https://forums.aws.amazon.com/thread.jspa?messageID=366822
 
 if __name__ == '__main__':
