@@ -37,7 +37,7 @@ def get_stack_outputs(cfn_conn, stack_name):
 	table = prettytable.PrettyTable(['key','value','description'])
 	for output in stack.outputs:
 		table.add_row([output.key, output.value, output.description])
-		print table
+	print table
 
 def create_stdout_logger():
 	logger = logging.getLogger()
