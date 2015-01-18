@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import boto, boto.cloudformation, yaml, time, logging, sys
+import boto, boto.cloudformation, yaml, time, logging, sys, prettytable
 
 def get_cfn_conn(region):
 	try : 
@@ -34,8 +34,10 @@ def parse_answers(answers_file):
 
 def get_stack_outputs(cfn_conn, stack_name):
 	stack = cfn_conn.describe_stacks(stack_name)[0]
-	for outputs in stack.outputs:
-		print('%s ==> %s   /*%s*/' %(outputs.key, outputs.value, outputs.description))
+	table = prettytable.PrettyTable(['key','value','description'])
+	for output in stack.outputs:
+		table.add_raw([output.key, output.value, output.description])
+		print table
 
 def create_stdout_logger():
 	logger = logging.getLogger()
