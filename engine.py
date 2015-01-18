@@ -54,11 +54,13 @@ def log_stack_events(cfn_conn, stack_name):
 	event = str(cfn_conn.describe_stack_events(stack_name)[0])
 	logger = create_stdout_logger()
 	while event != create_complete and event != rollback_complete: 
-		if str(cfn_conn.describe_stack_events(stack_name)[0]) != event:
-			event = str(cfn_conn.describe_stack_events(stack_name)[0])
-			logger.info(event)
-		else:
-			time.sleep(2) #TODO: needs refactoring see => https://forums.aws.amazon.com/thread.jspa?messageID=366822
+		try:
+			sevent = str(cfn_conn.describe_stack_events(stack_name)[0])
+			if sevent != event:
+				event = sevent
+				logger.info(event)
+		except boto.exception.BotoServerError:
+			time.sleep(1) #TODO: needs refactoring see => https://forums.aws.amazon.com/thread.jspa?messageID=366822
 
 if __name__ == '__main__':
 	answers = parse_answers('answers.yml')
