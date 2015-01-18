@@ -37,15 +37,20 @@ def get_stack_outputs(cfn_conn, stack_name):
 	for outputs in stack.outputs:
 		print('%s ==> %s   /*%s*/' %(outputs.key, outputs.value, outputs.description))
 
+def create_stdout_logger():
+	logger = logging.getLogger()
+	logger.setLevel(logging.INFO)
+	stdout = logging.StreamHandler(sys.stdout)
+	stdout.setLevel(logging.INFO)
+	logger.addHandler(stdout)
+	return logger
+
+
 def log_stack_events(cfn_conn, stack_name):
 	create_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' CREATE_COMPLETE'
 	rollback_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' ROLLBACK_COMPLETE'
 	event = str(cfn_conn.describe_stack_events(stack_name)[0])
-	logger = logging.getLogger()
-	logger.setLevel(logging.INFO)
-	ch = logging.StreamHandler(sys.stdout)
-	ch.setLevel(logging.INFO)
-	logger.addHandler(ch)
+	logger = create_stdout_logger()
 	while event != create_complete and event != rollback_complete: 
 		if str(cfn_conn.describe_stack_events(stack_name)[0]) != event:
 			event = str(cfn_conn.describe_stack_events(stack_name)[0])
