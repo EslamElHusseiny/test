@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import boto, boto.cloudformation, yaml, time
+import boto, boto.cloudformation, yaml, time, logging, sys
 
 def get_cfn_conn(region):
 	try : 
@@ -41,10 +41,15 @@ def log_stack_events(cfn_conn, stack_name):
 	create_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' CREATE_COMPLETE'
 	rollback_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' ROLLBACK_COMPLETE'
 	event = str(cfn_conn.describe_stack_events(stack_name)[0])
+	logger = logging.getLogger()
+	logger.setLevel(logging.INFO)
+	ch = logging.StreamHandler(sys.stdout)
+	ch.setLevel(logging.INFO)
+	logger.addHandler(ch)
 	while event != create_complete and event != rollback_complete: 
 		if str(cfn_conn.describe_stack_events(stack_name)[0]) != event:
 			event = str(cfn_conn.describe_stack_events(stack_name)[0])
-			print event
+			logger.info(event)
 		else:
 			time.sleep(2) #TODO: needs refactoring see => https://forums.aws.amazon.com/thread.jspa?messageID=366822
 
