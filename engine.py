@@ -37,4 +37,8 @@ def parse_answers(answers_file):
 if __name__ == '__main__':
 	answers = parse_answers('answers.yml')
 	cfn_conn = get_cfn_conn(answers['aws_region'])
-	cfn_conn.create_stack(stack_name=answers['stack_name'], template_body=get_template_body(answers['template']), parameters=answers['parameters'])
+	try:
+		cfn_conn.create_stack(stack_name=answers['stack_name'], template_body=get_template_body(answers['template']), parameters=answers['parameters'])
+	except Exception, e:
+		print str(e)
+	
