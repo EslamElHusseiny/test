@@ -78,15 +78,14 @@ def log_stack_events(cfn_conn, stack_name):
 	rollback_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' ROLLBACK_COMPLETE'
 	events = ['']
 	logger = create_stdout_logger()
-	while str(events[0]) != create_complete and str(events[0]) != rollback_complete: 
-		new_events = cfn_conn.describe_stack_events(stack_name)
-		if len(new_events) > len(events):
-			for i in range(len(new_events)-len(events),0,-1):
-				logger.info(new_events[i])
-			events = new_events
-		else:
-			time.sleep(2) #TODO: needs refactoring see => https://forums.aws.amazon.com/thread.jspa?messageID=366822
-	logger.info(events[0])
+	new_events = cfn_conn.describe_stack_events(stack_name, new_events.next_token)
+	while str(new_events[0]) != create_complete and str(new_events[0]) != rollback_complete:
+		new_events.reverse 		
+		for i in range(len(new_events)):
+			logger.info(new_events[i])
+			#time.sleep(2) #TODO: needs refactoring see => https://forums.aws.amazon.com/thread.jspa?messageID=366822
+		new_events = cfn_conn.describe_stack_events(stack_name, new_events.next_token)
+	#logger.info(events[0])
 
 if __name__ == '__main__':
 	answers = parse_answers('answers.yml')
