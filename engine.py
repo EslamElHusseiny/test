@@ -48,6 +48,9 @@ def parse_answers(answers_file):
 
 def get_stack_outputs(cfn_conn, stack_name):
 	stack = cfn_conn.describe_stacks(stack_name)[0]
+	if len(stack.outputs) == 0:
+		print "No Outputs to print"
+		exit(0)
 	table = prettytable.PrettyTable(['key','value','description'])
 	for output in stack.outputs:
 		table.add_row([output.key, output.value, output.description])
