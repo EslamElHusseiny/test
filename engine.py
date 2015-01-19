@@ -18,6 +18,10 @@ def get_template_body(template):
 		with open(template, "r") as stack_file:
 			template_body = stack_file.read()
 			return template_body
+	except IOError, e:
+		print "CloudFormation template \""+template+"\" doesn't exist"
+		print str(e)
+		exit(1)
 	except Exception, e:
 		print str(e)
 		exit(1)
@@ -41,6 +45,10 @@ def parse_answers(answers_file):
 	except KeyError, e:
 		print "Answers file structure isn't correct, kindly check https://github.com/EslamElHusseiny/test#yaml-file-example-"
 		print "Missing Key: "+str(e)
+		exit(1)
+	except IOError, e:
+		print "answers.yaml doesn't exist"
+		print str(e)
 		exit(1)
 	except Exception as e : 
 		print str(e)
