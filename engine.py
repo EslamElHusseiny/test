@@ -38,6 +38,10 @@ def parse_answers(answers_file):
 			ret['aws_region'] = yans[ret['stack_name']]['region']
 			ret['parameters'] = list(yans[ret['stack_name']]['parameters'].viewitems())
 			return ret		
+	except KeyError, e:
+		print "Answers file structure isn't correct, kindly check https://github.com/EslamElHusseiny/test#yaml-file-example-"
+		print "Missing Key: "+str(e)
+		exit(1)
 	except Exception as e : 
 		print str(e)
 		exit(1)
