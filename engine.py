@@ -3,14 +3,13 @@
 import boto, boto.cloudformation, yaml, time, logging, sys, prettytable
 
 def get_cfn_conn(region):
-	logger = create_stdout_logger()
 	try : 
 		cfn_conn = boto.cloudformation.connect_to_region(region_name=region)
 	except boto.exception.NoAuthHandlerFound as e:
 		print e
 	if type(cfn_conn) != boto.cloudformation.connection.CloudFormationConnection :
-		logger.info("Seems like \""+region+"\" isn't a valid aws region")
-		logger.info("kindly check http://docs.aws.amazon.com/general/latest/gr/rande.html")
+		print "Seems like \""+region+"\" isn't a valid aws region"
+		print "kindly check http://docs.aws.amazon.com/general/latest/gr/rande.html"
 		exit(1)
 	return cfn_conn
 
@@ -24,11 +23,10 @@ def get_template_body(template):
 		exit(1)
 
 def validate_template(cfn_conn, template_body):
-	logger = create_stdout_logger()
 	try:
 		cfn_conn.validate_template(template_body=template_body)
 	except boto.exception.BotoServerError, e:
-		logger.info(e)
+		print str(e)
 
 def parse_answers(answers_file):
 	ret={}
