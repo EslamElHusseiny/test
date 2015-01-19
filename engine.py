@@ -23,6 +23,13 @@ def get_template_body(template):
 		print str(e)
 		exit(1)
 
+def validate_template(cfn_conn, template_body):
+	logger = create_stdout_logger()
+	try:
+		cfn_conn.validate_template(template_body=template_body)
+	except boto.exception.BotoServerError, e:
+		logger.info(e)
+
 def parse_answers(answers_file):
 	ret={}
 	try :
@@ -71,6 +78,7 @@ def log_stack_events(cfn_conn, stack_name):
 if __name__ == '__main__':
 	answers = parse_answers('answers.yml')
 	cfn_conn = get_cfn_conn(answers['aws_region'])
+	validate_template(cfn_conn,get_template_body(answers['template']))
 	try:
 		cfn_conn.create_stack(stack_name=answers['stack_name'], template_body=get_template_body(answers['template']), parameters=answers['parameters'])
 	except Exception, e:
