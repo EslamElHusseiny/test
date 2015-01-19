@@ -51,7 +51,7 @@ def create_stdout_logger():
 def log_stack_events(cfn_conn, stack_name):
 	create_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' CREATE_COMPLETE'
 	rollback_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' ROLLBACK_COMPLETE'
-	events = []
+	events = ['']
 	logger = create_stdout_logger()
 	while str(events[0]) != create_complete and str(events[0]) != rollback_complete: 
 		new_events = cfn_conn.describe_stack_events(stack_name)
