@@ -51,15 +51,15 @@ def create_stdout_logger():
 def log_stack_events(cfn_conn, stack_name):
 	create_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' CREATE_COMPLETE'
 	rollback_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' ROLLBACK_COMPLETE'
-	events = cfn_conn.describe_stack_events(stack_name)
-	latest_event = str(events[0])
+	events = []
 	logger = create_stdout_logger()
-	while latest_event != create_complete and latest_event != rollback_complete: 
-		try:
-			events = cfn_conn.describe_stack_events(stack_name, next_token=latest_event)
-			for event in events:
-				logger.info(event)
-		except:
+	while str(events[0]) != create_complete and str(events[0]) != rollback_complete: 
+		new_events = cfn_conn.describe_stack_events(stack_name)
+		if len(new_events) > len(events):
+			for i in range(len(events), len(new_events)):
+				logger.info(new_events[i])
+			events = new_events
+		else:
 			time.sleep(2) #TODO: needs refactoring see => https://forums.aws.amazon.com/thread.jspa?messageID=366822
 
 if __name__ == '__main__':
