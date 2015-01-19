@@ -73,8 +73,3 @@ if __name__ == '__main__':
 		exit(1)
 	log_stack_events(cfn_conn, answers['stack_name'])
 	get_stack_outputs(cfn_conn, answers['stack_name'])
-	
-
-
-
-

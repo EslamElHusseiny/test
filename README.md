@@ -7,6 +7,22 @@ This repo includes :
 * Yaml file includes values of parameters of CloudFormation template
 * Python script : parses Yaml file and launch AWS stack descriped in CloudFormation template
 
+### Yaml file :
+Yaml file must have the following items:
+* stack_name => cloudformation stack name
+* region => AWS region your stack gonna deployed there
+* parameters => key/value pairs for parameters required for your cloudformation template
+### Yaml file example :
+```
+---
+stack_name:
+    region: eu-west-1
+    template: cfn_template.json
+    parameters:
+        Key1: Value1
+        Key2: Value2
+```
+
 ## How to start 
 ### Build docker image 
 ```
