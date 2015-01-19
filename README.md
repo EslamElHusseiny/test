@@ -12,6 +12,7 @@ Yaml file must have the following items:
 * stack_name => cloudformation stack name
 * region => AWS region your stack gonna deployed there
 * parameters => key/value pairs for parameters required for your cloudformation template
+
 ### Yaml file example :
 ```
 ---
