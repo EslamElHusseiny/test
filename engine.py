@@ -54,7 +54,7 @@ def log_stack_events(cfn_conn, stack_name):
 	events = cfn_conn.describe_stack_events(stack_name)
 	latest_event = str(events[0])
 	logger = create_stdout_logger()
-	while str(latest_event) != create_complete and event != rollback_complete: 
+	while latest_event != create_complete and latest_event != rollback_complete: 
 		try:
 			events = cfn_conn.describe_stack_events(stack_name, next_token=latest_event)
 			for event in events:
