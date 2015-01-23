@@ -39,6 +39,7 @@ def parse_answers(answers_file):
 			yans = yaml.load(answers)	
 			ret['stack_name'] = yans.keys()[0] 
 			ret['template'] = yans[ret['stack_name']]['template']
+			ret['template'] = yans[ret['stack_name']]['DeleteExistStack']
 			ret['aws_region'] = yans[ret['stack_name']]['region']
 			ret['parameters'] = list(yans[ret['stack_name']]['parameters'].viewitems())
 			return ret		
@@ -72,6 +73,13 @@ def create_stdout_logger():
 	logger.addHandler(stdout)
 	return logger
 
+def delete_stack(cfn_conn, stack_name):
+	try:
+		cfn_conn.delete_stack(stack_name)
+	except Exception, e:
+		print e
+	
+
 
 def log_stack_events(cfn_conn, stack_name):
 	create_complete = 'StackEvent AWS::CloudFormation::Stack '+stack_name+' CREATE_COMPLETE'
@@ -94,6 +102,9 @@ if __name__ == '__main__':
 	validate_template(cfn_conn,get_template_body(answers['template']))
 	try:
 		cfn_conn.create_stack(stack_name=answers['stack_name'], template_body=get_template_body(answers['template']), parameters=answers['parameters'])
+	except boto.exception.BotoServerError:
+		if answers['DeleteExistStack'] == 'yes':
+			delete_stack(cfn_conn,answers['stack_name'])
 	except Exception, e:
 		print str(e)
 		exit(1)

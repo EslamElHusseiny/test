@@ -2,6 +2,7 @@
 mystack:
     region: eu-west-1
     template: stack.json
+    DeleteExistStack: yes
     parameters:
         InstanceType: t2.micro
         KeyName: cakeSolutions
